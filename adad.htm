@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AD TUITION CLASSES - Result Portal</title>
+  <style>
+    body {
+      background: #e9ecef;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      margin: 0;
+    }
+
+    .top-bar {
+      width: 100%;
+      color: white;
+      padding: 10px 0;
+      font-size: 16px;
+      font-weight: bold;
+      overflow: hidden;
+      position: fixed;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .scroll-text {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scroll-left 15s linear infinite;
+      padding-left: 100%;
+    }
+
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .container {
+      margin-top: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #343a40;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .login-box, .result-box {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      position: relative;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 40px 10px 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s ease;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result-box {
+      display: none;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    .details {
+      text-align: left;
+      margin-top: 15px;
+      font-size: 15px;
+    }
+
+    .details p {
+      margin: 5px 0;
+    }
+
+    .highlight {
+      font-weight: bold;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .result-box, .result-box * {
+        visibility: visible;
+      }
+      .result-box {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔁 Sliding Banner 1: Test Date -->
+  <div class="top-bar" style="top: 0; background-color: #004085;">
+    <div class="scroll-text">📢 NEXT TEST DATE: 06 JULY 2025 — Be prepared and revise Chapters thoroughly! 📚</div>
+  </div>
+
+  <!-- 🔁 Sliding Banner 2: Topper Announcement -->
+  <div class="top-bar" style="top: 40px; background-color: #FF0000;">
+    <div class="scroll-text">🎉 Avni is the class topper with 24.5 / 30 in Maths! 🏆</div>
+  </div>
+
+  <div class="container">
+    <img class="logo" src="https://i.postimg.cc/BQ6RXPWM/ad-image.jpg" alt="AD Tuition Logo" />
+    <h1>Results for Test</h1>
+
+    <!-- 🔐 Login Form -->
+    <div class="login-box">
+      <h2>Student Login</h2>
+      <input type="text" id="studentName" placeholder="Enter Your Name" />
+
+      <div class="input-container">
+        <input type="password" id="studentPassword" placeholder="Enter Password" />
+        <span class="eye-icon" onclick="togglePassword()">👁️</span>
+      </div>
+
+      <button onclick="checkLogin()">Show Result</button>
+      <p class="error" id="errorMsg"></p>
+    </div>
+
+    <!-- 📄 Result Display -->
+    <div class="result-box" id="resultBox">
+      <h2>Welcome, <span id="displayName"></span></h2>
+      <div class="details" id="resultDetails"></div>
+      <button onclick="printResult()">🖨️ Print / Save</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- 🔧 Script -->
+  <script>
+    const studentData = {
+      "pratiksha": {
+        password: "pratiksha123",
+        father: "-------",
+        mother: "-------",
+        class: "7",
+        age: "12",
+        date: "30 June 2025",
+        marks: "Maths: 21 / 30"
+      },
+      "aradhya": {
+        password: "aradhya123",
+        father: "--------",
+        mother: "---------",
+        class: "7",
+        age: "12",
+        date: "30 June 2025",
+        marks: "Maths: 19 / 30"
+      },
+      "pranjal": {
+        password: "pranjal123",
+        father: "---------",
+        mother: "----------",
+        class: "7",
+        age: "12",
+        date: "30 June 2025",
+        marks: "Maths: 17 / 30"
+      },
+      "avni": {
+        password: "avni123",
+        father: "Amarchand vaishya",
+        mother: "Archana vaishya",
+        class: "3",
+        age: "8",
+        date: "30 June 2025",
+        marks: "Maths: 24.5 / 30"
+      },
+      "ayush": {
+        password: "ayush123",
+        father: "Indresh yadav",
+        mother: "Neelam Yadav",
+        class: "6",
+        age: "11",
+        date: "30 June 2025",
+        marks: "Maths: 22.5 / 30"
+      }
+    };
+
+    function checkLogin() {
+      const name = document.getElementById("studentName").value.trim().toLowerCase();
+      const password = document.getElementById("studentPassword").value.trim().toLowerCase();
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (studentData[name] && studentData[name].password.toLowerCase() === password) {
+        const student = studentData[name];
+        document.querySelector(".login-box").style.display = "none";
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("displayName").textContent = name.charAt(0).toUpperCase() + name.slice(1);
+
+        document.getElementById("resultDetails").innerHTML = `
+          <p><span class="highlight">Father's Name:</span> ${student.father}</p>
+          <p><span class="highlight">Mother's Name:</span> ${student.mother}</p>
+          <p><span class="highlight">Class:</span> ${student.class}</p>
+          <p><span class="highlight">Age:</span> ${student.age}</p>
+          <p><span class="highlight">Date:</span> ${student.date}</p>
+          <p><span class="highlight">Result:</span> ${student.marks}</p>
+        `;
+
+        errorMsg.textContent = "";
+      } else {
+        errorMsg.textContent = "Invalid name or password.";
+      }
+    }
+
+    function logout() {
+      document.querySelector(".login-box").style.display = "block";
+      document.getElementById("resultBox").style.display = "none";
+      document.getElementById("studentName").value = "";
+      document.getElementById("studentPassword").value = "";
+      document.getElementById("errorMsg").textContent = "";
+    }
+
+    function printResult() {
+      window.print();
+    }
+
+    function togglePassword() {
+      const pwd = document.getElementById("studentPassword");
+      pwd.type = pwd.type === "password" ? "text" : "password";
+    }
+  </script>
+</body>
+</html>
